@@ -1,10 +1,12 @@
 package com.rokkystudio.pixella;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.PictureDrawable;
+import android.os.Build;
 import android.view.View;
 
 public class SvgView extends View
@@ -1037,7 +1039,7 @@ public class SvgView extends View
         }
     }
 
-    @TargetApi(VERSION_CODES.GINGERBREAD)
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private class CompatScroller {
         Scroller scroller;
         OverScroller overScroller;

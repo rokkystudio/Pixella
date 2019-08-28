@@ -8,12 +8,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Shader;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Scroller;
 
 /**
  *  Отображает рабочую область с изображением
@@ -23,9 +26,6 @@ import android.view.View;
  */
 public class WorkspaceView extends View
 {
-    private static final float SUPER_MIN_MULTIPLIER = 0.75f;
-    private static final float SUPER_MAX_MULTIPLIER = 1.75f;
-
     private final Paint mPatternPaint = new Paint();
     private final Paint mBitmapPaint = new Paint();
 
@@ -71,10 +71,56 @@ public class WorkspaceView extends View
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(Canvas canvas)
+    {
         super.onDraw(canvas);
         drawPattern(canvas);
+
+        canvas.save();
+        if (mMatrix != null) {
+            canvas.concat(mMatrix);
+        }
+
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        canvas.restore();
+        super.onDraw(canvas);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("instanceState", super.onSaveInstanceState());
+        bundle.putFloat("saveScale", normalizedScale);
+        bundle.putFloat("matchViewHeight", matchViewHeight);
+        bundle.putFloat("matchViewWidth", matchViewWidth);
+        bundle.putInt("viewWidth", viewWidth);
+        bundle.putInt("viewHeight", viewHeight);
+        mMatrix.getValues(m);
+        bundle.putFloatArray("matrix", m);
+        bundle.putBoolean("imageRendered", imageRenderedAtLeastOnce);
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state)
+    {
+        if (state instanceof Bundle)
+        {
+            Bundle bundle = (Bundle) state;
+            normalizedScale = bundle.getFloat("saveScale");
+            m = bundle.getFloatArray("matrix");
+            mPrevMatrix.setValues(m);
+            prevMatchViewHeight = bundle.getFloat("matchViewHeight");
+            prevMatchViewWidth = bundle.getFloat("matchViewWidth");
+            prevViewHeight = bundle.getInt("viewHeight");
+            prevViewWidth = bundle.getInt("viewWidth");
+            imageRenderedAtLeastOnce = bundle.getBoolean("imageRendered");
+            super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+            return;
+        }
+
+        super.onRestoreInstanceState(state);
     }
 
     public void setPattern(int color1, int color2, int size) {
@@ -176,11 +222,11 @@ public class WorkspaceView extends View
                         last.set(curr);
                         if (mFling != null)
                             mFling.cancelFling();
-                        setState(SvgView.State.DRAG);
+                        mState = State.DRAG;
                         break;
 
                     case MotionEvent.ACTION_MOVE:
-                        if (mState == SvgView.State.DRAG) {
+                        if (mState == State.DRAG) {
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
                             float fixTransX = getFixDragTrans(deltaX, viewWidth, getImageWidth());
@@ -193,7 +239,7 @@ public class WorkspaceView extends View
 
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
-                        setState(SvgView.State.NONE);
+                        mState = State.NONE;
                         break;
                 }
             }
@@ -212,6 +258,125 @@ public class WorkspaceView extends View
 
             // indicate event was handled
             return true;
+        }
+    }
+
+    private class Fling implements Runnable
+    {
+        Scroller scroller;
+        int currX, currY;
+
+        Fling(int velocityX, int velocityY)
+        {
+            scroller = new Scroller(mContext);
+            mMatrix.getValues(m);
+
+            int startX = (int) m[Matrix.MTRANS_X];
+            int startY = (int) m[Matrix.MTRANS_Y];
+            int minX, maxX, minY, maxY;
+
+            if (getImageWidth() > viewWidth) {
+                minX = viewWidth - (int) getImageWidth();
+                maxX = 0;
+
+            } else {
+                minX = maxX = startX;
+            }
+
+            if (getImageHeight() > viewHeight) {
+                minY = viewHeight - (int) getImageHeight();
+                maxY = 0;
+
+            } else {
+                minY = maxY = startY;
+            }
+
+            scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
+            currX = startX;
+            currY = startY;
+        }
+
+        void cancelFling() {
+            if (scroller != null) {
+                mState = State.NONE;
+                scroller.forceFinished(true);
+            }
+        }
+
+        @Override
+        public void run()
+        {
+            mState = State.FLING;
+            // OnTouchImageViewListener is set: TouchImageView listener has been flung by user.
+            // Listener runnable updated with each frame of mFling animation.
+            if (touchImageViewListener != null) {
+                touchImageViewListener.onMove();
+            }
+
+            if (scroller.isFinished()) {
+                scroller = null;
+                return;
+            }
+
+            if (scroller.computeScrollOffset())
+            {
+                int newX = scroller.getCurrX();
+                int newY = scroller.getCurrY();
+                int transX = newX - currX;
+                int transY = newY - currY;
+                currX = newX;
+                currY = newY;
+                mMatrix.postTranslate(transX, transY);
+                fixTrans();
+                invalidate();
+                postOnAnimation(this);
+                return;
+            }
+
+            mState = State.NONE;
+            invalidate();
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            mState = State.ZOOM;
+            return true;
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector)
+        {
+            scaleImage(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY(), true);
+
+            // OnTouchImageViewListener is set: TouchImageView pinch zoomed by user.
+            if (touchImageViewListener != null) {
+                touchImageViewListener.onMove();
+            }
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector)
+        {
+            super.onScaleEnd(detector);
+            mState = State.NONE;
+            boolean animateToZoomBoundary = false;
+            float targetZoom = normalizedScale;
+            if (normalizedScale > maxScale) {
+                targetZoom = maxScale;
+                animateToZoomBoundary = true;
+
+            } else if (normalizedScale < minScale) {
+                targetZoom = minScale;
+                animateToZoomBoundary = true;
+            }
+
+            if (animateToZoomBoundary) {
+                SvgView.DoubleTapZoom doubleTap = new SvgView.DoubleTapZoom(targetZoom, viewWidth / 2f, viewHeight / 2f, true);
+                postOnAnimation(doubleTap);
+            }
         }
     }
 }
