@@ -35,6 +35,22 @@ public class WorkspaceView extends View
     private Context mContext;
     private Fling mFling;
 
+    /**
+     * Scale of image ranges from minScale to maxScale, where minScale == 1
+     * when the image is stretched to fit view.
+     */
+    private float mNormalizedScale = 1;
+    private float mMinScale = 1;
+    private float mMaxScale = 3;
+
+    private float[] m = new float[9];
+
+    // Size of view and previous view size (ie before rotation)
+    private int mViewWidth, mViewHeight, mPrevViewWidth, mPrevViewHeight;
+
+    // Size of image when it is stretched to fit view. Before and After rotation.
+    private float matchViewWidth, matchViewHeight, prevMatchViewWidth, prevMatchViewHeight;
+
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
     private GestureDetector.OnDoubleTapListener mOnDoubleTapListener = null;
@@ -94,8 +110,8 @@ public class WorkspaceView extends View
         bundle.putFloat("saveScale", normalizedScale);
         bundle.putFloat("matchViewHeight", matchViewHeight);
         bundle.putFloat("matchViewWidth", matchViewWidth);
-        bundle.putInt("viewWidth", viewWidth);
-        bundle.putInt("viewHeight", viewHeight);
+        bundle.putInt("viewWidth", mViewWidth);
+        bundle.putInt("viewHeight", mViewHeight);
         mMatrix.getValues(m);
         bundle.putFloatArray("matrix", m);
         bundle.putBoolean("imageRendered", imageRenderedAtLeastOnce);
@@ -113,14 +129,171 @@ public class WorkspaceView extends View
             mPrevMatrix.setValues(m);
             prevMatchViewHeight = bundle.getFloat("matchViewHeight");
             prevMatchViewWidth = bundle.getFloat("matchViewWidth");
-            prevViewHeight = bundle.getInt("viewHeight");
-            prevViewWidth = bundle.getInt("viewWidth");
+            mPrevViewHeight = bundle.getInt("viewHeight");
+            mPrevViewWidth = bundle.getInt("viewWidth");
             imageRenderedAtLeastOnce = bundle.getBoolean("imageRendered");
             super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
             return;
         }
 
         super.onRestoreInstanceState(state);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        if (mBitmap == null || mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0) {
+            setMeasuredDimension(0, 0);
+            return;
+        }
+
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        mViewWidth = setViewSize(widthMode, widthSize, mBitmap.getWidth());
+        mViewHeight = setViewSize(heightMode, heightSize, mBitmap.getHeight());
+
+        // Set view dimensions
+        setMeasuredDimension(mViewWidth, mViewHeight);
+
+        // Fit content within view
+        fitImageToView();
+    }
+
+    private float getImageWidth() {
+        return matchViewWidth * normalizedScale;
+    }
+
+    private float getImageHeight() {
+        return matchViewHeight * normalizedScale;
+    }
+
+    private float getFixDragTrans(float delta, float viewSize, float contentSize) {
+        if (contentSize <= viewSize) {
+            return 0;
+        }
+        return delta;
+    }
+
+    public boolean isZoomed() {
+        return normalizedScale != 1;
+    }
+
+    private void fitImageToView()
+    {
+        if (mBitmap == null || mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0) return;
+
+        // Scale image for view
+        float scaleX = (float) mViewWidth / mBitmap.getWidth();
+        float scaleY = (float) mViewHeight / mBitmap.getHeight();
+        float scale = Math.min(scaleX, scaleY);
+
+        // Center the image
+        float redundantXSpace = mViewWidth - (scale * mBitmap.getWidth());
+        float redundantYSpace = mViewHeight - (scale * mBitmap.getHeight());
+        matchViewWidth = mViewWidth - redundantXSpace;
+        matchViewHeight = mViewHeight - redundantYSpace;
+
+        if (!isZoomed() && !imageRenderedAtLeastOnce) {
+            // Stretch and center image to fit view
+            mMatrix.setScale(scale, scale);
+            mMatrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
+            normalizedScale = 1;
+        } else {
+            // These values should never be 0 or we will set viewWidth and viewHeight
+            // to NaN in translateMatrixAfterRotate. To avoid this, call savePreviousImageValues
+            // to set them equal to the current values.
+            if (prevMatchViewWidth == 0 || prevMatchViewHeight == 0) {
+                savePreviousImageValues();
+            }
+
+            mPrevMatrix.getValues(m);
+
+            // Rescale Matrix after rotation
+            m[Matrix.MSCALE_X] = matchViewWidth / mBitmap.getWidth() * normalizedScale;
+            m[Matrix.MSCALE_Y] = matchViewHeight / mBitmap.getHeight() * normalizedScale;
+
+            // TransX and TransY from previous matrix
+            float transX = m[Matrix.MTRANS_X];
+            float transY = m[Matrix.MTRANS_Y];
+
+            // Width
+            float prevActualWidth = prevMatchViewWidth * normalizedScale;
+            float actualWidth = getImageWidth();
+            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, mPrevViewWidth, mViewWidth, mBitmap.getWidth());
+
+            // Height
+            float prevActualHeight = prevMatchViewHeight * normalizedScale;
+            float actualHeight = getImageHeight();
+            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, mPrevViewHeight, mViewHeight, mBitmap.getHeight());
+
+            // Set the matrix to the adjusted scale and translate values.
+            mMatrix.setValues(m);
+        }
+        fixTrans();
+        invalidate();
+    }
+
+    /**
+     * Performs boundary checking and fixes the image matrix if it is out of bounds.
+     */
+    private void fixTrans()
+    {
+        mMatrix.getValues(m);
+        float transX = m[Matrix.MTRANS_X];
+        float transY = m[Matrix.MTRANS_Y];
+
+        float fixTransX = getFixTrans(transX, mViewWidth, getImageWidth());
+        float fixTransY = getFixTrans(transY, mViewHeight, getImageHeight());
+
+        if (fixTransX != 0 || fixTransY != 0) {
+            mMatrix.postTranslate(fixTransX, fixTransY);
+        }
+    }
+
+    private float getFixTrans(float trans, float viewSize, float contentSize)
+    {
+        float minTrans, maxTrans;
+
+        if (contentSize <= viewSize) {
+            minTrans = 0;
+            maxTrans = viewSize - contentSize;
+
+        } else {
+            minTrans = viewSize - contentSize;
+            maxTrans = 0;
+        }
+
+        if (trans < minTrans)
+            return -trans + minTrans;
+        if (trans > maxTrans)
+            return -trans + maxTrans;
+        return 0;
+    }
+
+    private int setViewSize(int mode, int size, int drawableWidth)
+    {
+        int viewSize;
+        switch (mode)
+        {
+            case MeasureSpec.EXACTLY:
+                viewSize = size;
+                break;
+
+            case MeasureSpec.AT_MOST:
+                viewSize = Math.min(drawableWidth, size);
+                break;
+
+            case MeasureSpec.UNSPECIFIED:
+                viewSize = drawableWidth;
+                break;
+
+            default:
+                viewSize = size;
+                break;
+        }
+        return viewSize;
     }
 
     public void setPattern(int color1, int color2, int size) {
@@ -152,14 +325,8 @@ public class WorkspaceView extends View
                 return mOnDoubleTapListener.onSingleTapConfirmed(e);
             }
 
-            if (mOnClickLinkListener != null)
-            {
+            if (mOnClickLinkListener != null) {
                 PointF point = coordTouchToSVG(e.getX(), e.getY());
-                String href = getLinkFromPoint(point);
-
-                if (href != null) {
-                    mOnClickLinkListener.clickLink(href);
-                }
                 return true;
             }
             return performClick();
@@ -174,7 +341,7 @@ public class WorkspaceView extends View
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
         {
             if (mFling != null) mFling.cancelFling();
-            mFling = new SvgView.Fling((int) velocityX, (int) velocityY);
+            mFling = new Fling((int) velocityX, (int) velocityY);
             postOnAnimation(mFling);
             return super.onFling(e1, e2, velocityX, velocityY);
         }
@@ -229,8 +396,8 @@ public class WorkspaceView extends View
                         if (mState == State.DRAG) {
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
-                            float fixTransX = getFixDragTrans(deltaX, viewWidth, getImageWidth());
-                            float fixTransY = getFixDragTrans(deltaY, viewHeight, getImageHeight());
+                            float fixTransX = getFixDragTrans(deltaX, mViewWidth, getImageWidth());
+                            float fixTransY = getFixDragTrans(deltaY, mViewHeight, getImageHeight());
                             mMatrix.postTranslate(fixTransX, fixTransY);
                             fixTrans();
                             last.set(curr.x, curr.y);
@@ -275,16 +442,16 @@ public class WorkspaceView extends View
             int startY = (int) m[Matrix.MTRANS_Y];
             int minX, maxX, minY, maxY;
 
-            if (getImageWidth() > viewWidth) {
-                minX = viewWidth - (int) getImageWidth();
+            if (getImageWidth() > mViewWidth) {
+                minX = mViewWidth - (int) getImageWidth();
                 maxX = 0;
 
             } else {
                 minX = maxX = startX;
             }
 
-            if (getImageHeight() > viewHeight) {
-                minY = viewHeight - (int) getImageHeight();
+            if (getImageHeight() > mViewHeight) {
+                minY = mViewHeight - (int) getImageHeight();
                 maxY = 0;
 
             } else {
@@ -378,5 +545,21 @@ public class WorkspaceView extends View
                 postOnAnimation(doubleTap);
             }
         }
+    }
+
+    private void scaleImage(double deltaScale, float focusX, float focusY)
+    {
+        float origScale = normalizedScale;
+        normalizedScale *= deltaScale;
+        if (normalizedScale > mMaxScale) {
+            normalizedScale = mMaxScale;
+            deltaScale = mMaxScale / origScale;
+        } else if (normalizedScale < minScale) {
+            normalizedScale = minScale;
+            deltaScale = minScale / origScale;
+        }
+
+        mMatrix.postScale((float) deltaScale, (float) deltaScale, focusX, focusY);
+        fixScaleTrans();
     }
 }
