@@ -10,7 +10,6 @@ import android.graphics.PointF;
 import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -35,27 +34,13 @@ public class WorkspaceView extends View
     private Context mContext;
     private Fling mFling;
 
-    /**
-     * Scale of image ranges from minScale to maxScale, where minScale == 1
-     * when the image is stretched to fit view.
-     */
-    private float mNormalizedScale = 1;
-    private float mMinScale = 1;
-    private float mMaxScale = 3;
-
-    private float[] m = new float[9];
-
-    // Size of view and previous view size (ie before rotation)
-    private int mViewWidth, mViewHeight, mPrevViewWidth, mPrevViewHeight;
-
-    // Size of image when it is stretched to fit view. Before and After rotation.
-    private float matchViewWidth, matchViewHeight, prevMatchViewWidth, prevMatchViewHeight;
+    private int mImageWidth;
+    private int mImageHeight;
 
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
     private GestureDetector.OnDoubleTapListener mOnDoubleTapListener = null;
     private OnTouchListener mUserTouchListener = null;
-    private SvgView.OnTouchImageViewListener mTouchImageViewListener = null;
 
     private Matrix mMatrix = new Matrix();
     private Bitmap mBitmap = null;
@@ -65,12 +50,12 @@ public class WorkspaceView extends View
         init(context);
     }
 
-    public WorkspaceView(Context context, @Nullable AttributeSet attrs) {
+    public WorkspaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public WorkspaceView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WorkspaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -106,15 +91,12 @@ public class WorkspaceView extends View
     public Parcelable onSaveInstanceState()
     {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("instanceState", super.onSaveInstanceState());
-        bundle.putFloat("saveScale", normalizedScale);
-        bundle.putFloat("matchViewHeight", matchViewHeight);
-        bundle.putFloat("matchViewWidth", matchViewWidth);
-        bundle.putInt("viewWidth", mViewWidth);
-        bundle.putInt("viewHeight", mViewHeight);
-        mMatrix.getValues(m);
-        bundle.putFloatArray("matrix", m);
-        bundle.putBoolean("imageRendered", imageRenderedAtLeastOnce);
+        bundle.putParcelable("InstanceState", super.onSaveInstanceState());
+        bundle.putFloat("ImageWidth", mImageWidth);
+        bundle.putFloat("ImageHeight", mImageHeight);
+        float[] matrix = new float[9];
+        mMatrix.getValues(matrix);
+        bundle.putFloatArray("Matrix", matrix);
         return bundle;
     }
 
@@ -124,15 +106,10 @@ public class WorkspaceView extends View
         if (state instanceof Bundle)
         {
             Bundle bundle = (Bundle) state;
-            normalizedScale = bundle.getFloat("saveScale");
-            m = bundle.getFloatArray("matrix");
-            mPrevMatrix.setValues(m);
-            prevMatchViewHeight = bundle.getFloat("matchViewHeight");
-            prevMatchViewWidth = bundle.getFloat("matchViewWidth");
-            mPrevViewHeight = bundle.getInt("viewHeight");
-            mPrevViewWidth = bundle.getInt("viewWidth");
-            imageRenderedAtLeastOnce = bundle.getBoolean("imageRendered");
-            super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+            float[] matrix = bundle.getFloatArray("Matrix");
+            mImageWidth = bundle.getInt("ImageWidth");
+            mImageHeight = bundle.getInt("ImageHeight");
+            super.onRestoreInstanceState(bundle.getParcelable("InstanceState"));
             return;
         }
 
@@ -151,22 +128,22 @@ public class WorkspaceView extends View
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        mViewWidth = setViewSize(widthMode, widthSize, mBitmap.getWidth());
-        mViewHeight = setViewSize(heightMode, heightSize, mBitmap.getHeight());
+        //mViewWidth = setViewSize(widthMode, widthSize, mBitmap.getWidth());
+        //mViewHeight = setViewSize(heightMode, heightSize, mBitmap.getHeight());
 
         // Set view dimensions
-        setMeasuredDimension(mViewWidth, mViewHeight);
+        //setMeasuredDimension(mViewWidth, mViewHeight);
 
         // Fit content within view
         fitImageToView();
     }
 
     private float getImageWidth() {
-        return matchViewWidth * normalizedScale;
+        return mImageWidth;
     }
 
     private float getImageHeight() {
-        return matchViewHeight * normalizedScale;
+        return mImageHeight;
     }
 
     private float getFixDragTrans(float delta, float viewSize, float contentSize) {
@@ -176,14 +153,11 @@ public class WorkspaceView extends View
         return delta;
     }
 
-    public boolean isZoomed() {
-        return normalizedScale != 1;
-    }
-
     private void fitImageToView()
     {
         if (mBitmap == null || mBitmap.getWidth() == 0 || mBitmap.getHeight() == 0) return;
 
+        /*
         // Scale image for view
         float scaleX = (float) mViewWidth / mBitmap.getWidth();
         float scaleY = (float) mViewHeight / mBitmap.getHeight();
@@ -233,6 +207,7 @@ public class WorkspaceView extends View
         }
         fixTrans();
         invalidate();
+         */
     }
 
     /**
@@ -240,6 +215,7 @@ public class WorkspaceView extends View
      */
     private void fixTrans()
     {
+        /*
         mMatrix.getValues(m);
         float transX = m[Matrix.MTRANS_X];
         float transY = m[Matrix.MTRANS_Y];
@@ -250,6 +226,7 @@ public class WorkspaceView extends View
         if (fixTransX != 0 || fixTransY != 0) {
             mMatrix.postTranslate(fixTransX, fixTransY);
         }
+        */
     }
 
     private float getFixTrans(float trans, float viewSize, float contentSize)
@@ -324,11 +301,6 @@ public class WorkspaceView extends View
             if (mOnDoubleTapListener != null) {
                 return mOnDoubleTapListener.onSingleTapConfirmed(e);
             }
-
-            if (mOnClickLinkListener != null) {
-                PointF point = coordTouchToSVG(e.getX(), e.getY());
-                return true;
-            }
             return performClick();
         }
 
@@ -396,8 +368,8 @@ public class WorkspaceView extends View
                         if (mState == State.DRAG) {
                             float deltaX = curr.x - last.x;
                             float deltaY = curr.y - last.y;
-                            float fixTransX = getFixDragTrans(deltaX, mViewWidth, getImageWidth());
-                            float fixTransY = getFixDragTrans(deltaY, mViewHeight, getImageHeight());
+                            float fixTransX = getFixDragTrans(deltaX, mImageWidth, getImageWidth());
+                            float fixTransY = getFixDragTrans(deltaY, mImageHeight, getImageHeight());
                             mMatrix.postTranslate(fixTransX, fixTransY);
                             fixTrans();
                             last.set(curr.x, curr.y);
@@ -412,18 +384,6 @@ public class WorkspaceView extends View
             }
 
             invalidate();
-
-            // User-defined OnTouchListener
-            if (userTouchListener != null) {
-                userTouchListener.onTouch(v, event);
-            }
-
-            // OnTouchImageViewListener is set: TouchImageView dragged by user.
-            if (mOnTouchImageViewListener != null) {
-                touchImageViewListener.onMove();
-            }
-
-            // indicate event was handled
             return true;
         }
     }
@@ -435,6 +395,7 @@ public class WorkspaceView extends View
 
         Fling(int velocityX, int velocityY)
         {
+            /*
             scroller = new Scroller(mContext);
             mMatrix.getValues(m);
 
@@ -461,6 +422,8 @@ public class WorkspaceView extends View
             scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
             currX = startX;
             currY = startY;
+
+             */
         }
 
         void cancelFling() {
@@ -474,11 +437,6 @@ public class WorkspaceView extends View
         public void run()
         {
             mState = State.FLING;
-            // OnTouchImageViewListener is set: TouchImageView listener has been flung by user.
-            // Listener runnable updated with each frame of mFling animation.
-            if (touchImageViewListener != null) {
-                touchImageViewListener.onMove();
-            }
 
             if (scroller.isFinished()) {
                 scroller = null;
@@ -515,18 +473,22 @@ public class WorkspaceView extends View
         @Override
         public boolean onScale(ScaleGestureDetector detector)
         {
+            /*
             scaleImage(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY(), true);
 
             // OnTouchImageViewListener is set: TouchImageView pinch zoomed by user.
             if (touchImageViewListener != null) {
                 touchImageViewListener.onMove();
             }
+
+             */
             return true;
         }
 
         @Override
         public void onScaleEnd(ScaleGestureDetector detector)
         {
+            /*
             super.onScaleEnd(detector);
             mState = State.NONE;
             boolean animateToZoomBoundary = false;
@@ -544,11 +506,13 @@ public class WorkspaceView extends View
                 SvgView.DoubleTapZoom doubleTap = new SvgView.DoubleTapZoom(targetZoom, viewWidth / 2f, viewHeight / 2f, true);
                 postOnAnimation(doubleTap);
             }
+             */
         }
     }
 
     private void scaleImage(double deltaScale, float focusX, float focusY)
     {
+        /*
         float origScale = normalizedScale;
         normalizedScale *= deltaScale;
         if (normalizedScale > mMaxScale) {
@@ -561,5 +525,7 @@ public class WorkspaceView extends View
 
         mMatrix.postScale((float) deltaScale, (float) deltaScale, focusX, focusY);
         fixScaleTrans();
+
+         */
     }
 }
