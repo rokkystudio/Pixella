@@ -128,11 +128,11 @@ public class WorkspaceView extends View
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        //mViewWidth = setViewSize(widthMode, widthSize, mBitmap.getWidth());
-        //mViewHeight = setViewSize(heightMode, heightSize, mBitmap.getHeight());
+        mViewWidth = setViewSize(widthMode, widthSize, mBitmap.getWidth());
+        mViewHeight = setViewSize(heightMode, heightSize, mBitmap.getHeight());
 
         // Set view dimensions
-        //setMeasuredDimension(mViewWidth, mViewHeight);
+        setMeasuredDimension(mViewWidth, mViewHeight);
 
         // Fit content within view
         fitImageToView();
