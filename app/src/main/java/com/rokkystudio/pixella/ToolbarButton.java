@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 public class ToolbarButton extends AppCompatImageView
