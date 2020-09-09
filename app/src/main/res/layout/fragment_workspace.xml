@@ -15,37 +15,37 @@
         android:layout_height="@dimen/toolbar_height"
         android:orientation="horizontal">
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/color" />
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/eraser" />
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/pencil" />
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/paint" />
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/undo" />
 
-        <com.rokkystudio.pixella.toolbar.ToolbarButton
+        <com.rokkystudio.pixella.toolbar.Tool
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

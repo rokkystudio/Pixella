@@ -8,19 +8,19 @@ import android.graphics.PaintFlagsDrawFilter;
 import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-public class ToolbarButton extends AppCompatImageView
+public class Tool extends AppCompatImageView
 {
     private static final DrawFilter mDrawFilter = new PaintFlagsDrawFilter(Paint.FILTER_BITMAP_FLAG, 0);
 
-    public ToolbarButton(Context context) {
+    public Tool(Context context) {
         super(context);
     }
 
-    public ToolbarButton(Context context, AttributeSet attrs) {
+    public Tool(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ToolbarButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Tool(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
