@@ -3,8 +3,7 @@ package com.rokkystudio.pixella;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity implements
-        WorkspaceFragment.WorkspaceListener
+public class MainActivity extends AppCompatActivity implements WorkspaceFragment.WorkspaceListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)

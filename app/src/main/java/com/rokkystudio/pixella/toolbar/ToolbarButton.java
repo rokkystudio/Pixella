@@ -1,4 +1,4 @@
-package com.rokkystudio.pixella;
+package com.rokkystudio.pixella.toolbar;
 
 import android.content.Context;
 import android.graphics.Canvas;
