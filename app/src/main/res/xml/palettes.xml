@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pixella default palettes -->
 <palettes>
-    <palette name="NES Super Mario">
+    <palette name="Super Mario">
         <color value="#FCB35B" />
         <color value="#C36412" />
         <color value="#EE87C0" />
@@ -29,5 +29,47 @@
         <color value="#20201C" />
     </palette>
 
+
+    <palette name="Pokemon">
+        <color value="#040404" />
+        <color value="#917563" />
+        <color value="#464442" />
+        <color value="#4F83C0" />
+        <color value="#576B6D" />
+        <color value="#8BC8D3" />
+        <color value="#50BCCE" />
+        <color value="#31D1C3" />
+        <color value="#0C0F30" />
+        <color value="#040A1E" />
+        <color value="#040714" />
+        <color value="#DCCFA4" />
+        <color value="#E4C86E" />
+        <color value="#E5B44F" />
+        <color value="#ECAB24" />
+        <color value="#E3D6E6" />
+        <color value="#E36C70" />
+        <color value="#4A4666" />
+        <color value="#957ABB" />
+        <color value="#564CA5" />
+        <color value="#E88E9C" />
+        <color value="#CC3D5E" />
+        <color value="#9A2543" />
+        <color value="#241414" />
+        <color value="#150404" />
+        <color value="#0C0505" />
+        <color value="#353F3E" />
+        <color value="#55663D" />
+        <color value="#74C390" />
+        <color value="#0A9454" />
+        <color value="#80CC68" />
+        <color value="#7FCB34" />
+        <color value="#1E801F" />
+        <color value="#042404" />
+        <color value="#040C08" />
+        <color value="#04140F" />
+        <color value="#04040C" />
+        <color value="#080404" />
+
+    </palette>
 
 </palettes>

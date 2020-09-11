@@ -8,15 +8,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class WorkspaceFragment extends Fragment {
+import com.rokkystudio.pixella.palette.PaletteManager;
+import com.rokkystudio.pixella.palette.PaletteView;
 
+public class WorkspaceFragment extends Fragment
+{
     private WorkspaceListener mListener;
+    private View mRootView = null;
+
+    private PaletteManager mPaletteManager;
 
     public WorkspaceFragment() {}
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        mPaletteManager = new PaletteManager();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_workspace, container, false);
+        if (mRootView != null) return mRootView;
+        mRootView = inflater.inflate(R.layout.workspace, container, false);
+        PaletteView paletteView = mRootView.findViewById(R.id.PaletteView);
+        paletteView
+        return mRootView;
     }
 
     @Override
