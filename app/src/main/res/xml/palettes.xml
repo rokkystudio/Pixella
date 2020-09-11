@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pixella default palettes -->
+<palettes>
+    <palette name="NES Super Mario">
+        <color value="#FCB35B" />
+        <color value="#C36412" />
+        <color value="#EE87C0" />
+        <color value="#3339E2" />
+        <color value="#9CB4AC" />
+        <color value="#040404" />
+        <color value="#25646D" />
+        <color value="#2CCCFC" />
+        <color value="#54FC2C" />
+        <color value="#F43A17" />
+        <color value="#C47C3C" />
+        <color value="#1C1C1C" />
+        <color value="#7E685E" />
+        <color value="#BCBCBC" />
+        <color value="#242424" />
+        <color value="#215259" />
+        <color value="#DC1494" />
+        <color value="#04141C" />
+        <color value="#25A514" />
+        <color value="#B4DC34" />
+        <color value="#FFFFFF" />
+        <color value="#EBE1C8" />
+        <color value="#A7B0A8" />
+        <color value="#101458" />
+        <color value="#20201C" />
+    </palette>
+
+
+</palettes>
