@@ -29,7 +29,6 @@
         <color value="#20201C" />
     </palette>
 
-
     <palette name="Pokemon">
         <color value="#040404" />
         <color value="#917563" />
@@ -42,6 +41,7 @@
         <color value="#0C0F30" />
         <color value="#040A1E" />
         <color value="#040714" />
+        <color value="#04040C" />
         <color value="#DCCFA4" />
         <color value="#E4C86E" />
         <color value="#E5B44F" />
@@ -57,6 +57,7 @@
         <color value="#241414" />
         <color value="#150404" />
         <color value="#0C0505" />
+        <color value="#080404" />
         <color value="#353F3E" />
         <color value="#55663D" />
         <color value="#74C390" />
@@ -65,11 +66,57 @@
         <color value="#7FCB34" />
         <color value="#1E801F" />
         <color value="#042404" />
-        <color value="#040C08" />
         <color value="#04140F" />
-        <color value="#04040C" />
-        <color value="#080404" />
+        <color value="#040C08" />
+    </palette>
 
+    <palette name="Sonic">
+        <color value="#6B8BCE" />
+        <color value="#7E7F22" />
+        <color value="#51DC20" />
+        <color value="#949397" />
+        <color value="#ABB4C8" />
+        <color value="#071BC2" />
+        <color value="#154C07" />
+        <color value="#9BEB19" />
+        <color value="#F8981C" />
+        <color value="#E2651C" />
+        <color value="#FCFCFC" />
+        <color value="#FAEA1D" />
+        <color value="#ECE87D" />
+        <color value="#6C170C" />
+        <color value="#04C71E" />
+        <color value="#4C4C4C" />
+        <color value="#B1DDF0" />
+        <color value="#980714" />
+        <color value="#944C14" />
+        <color value="#94FC54" />
+        <color value="#4C060C" />
+        <color value="#222224" />
+        <color value="#5924AD" />
+        <color value="#040484" />
+        <color value="#FCB43C" />
+        <color value="#4CB475" />
+        <color value="#DCF8FC" />
+        <color value="#4C4F8C" />
+        <color value="#042404" />
+        <color value="#DF61BC" />
+        <color value="#E7181C" />
+        <color value="#9D225D" />
+        <color value="#040404" />
+        <color value="#24FC64" />
+        <color value="#240404" />
+        <color value="#2C5CDC" />
+        <color value="#4C57D0" />
+        <color value="#F71277" />
+        <color value="#187A64" />
+        <color value="#049404" />
+        <color value="#6CB4CC" />
+        <color value="#046C04" />
+        <color value="#FCB4DC" />
+        <color value="#341C68" />
+        <color value="#348824" />
+        <color value="#048828" />
     </palette>
 
 </palettes>
