@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default Toolbar Layout -->
+<Toolbar>
+    <Tool name="PickColor" />
+
+    <ToolsGroup>
+        <Tool name="Dropper" />
+        <Tool name="Hand" />
+        <Tool name="Zoom" />
+    </ToolsGroup>
+
+    <ToolsGroup>
+        <Tool name="Pencil" />
+        <Tool name="Brush" />
+        <Tool name="Marker" />
+    </ToolsGroup>
+
+    <ToolsGroup>
+        <Tool name="Eraser" />
+    </ToolsGroup>
+
+    <ToolsGroup>
+        <Tool name="Paint" />
+        <Tool name="Gradient" />
+        <Tool name="Shape" />
+    </ToolsGroup>
+
+    <ToolsGroup>
+        <Tool name="Undo" />
+        <Tool name="Redo" />
+    </ToolsGroup>
+
+    <ToolsGroup>
+        <Tool name="Select" />
+        <Tool name="Crop" />
+        <Tool name="Rotate" />
+        <Tool name="Flip" />
+    </ToolsGroup>
+
+    <Tool name="Menu" />
+</Toolbar>
