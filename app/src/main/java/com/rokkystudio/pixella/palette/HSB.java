@@ -12,4 +12,33 @@ public class HSB {
     public HSB(int hue, int saturation, int brightness) {
         this.hue = hue; this.saturation = saturation; this.brightness = brightness;
     }
+
+    public static HSB fromHex(String hex) {
+        ARGB argb = ARGB.fromHex(hex);
+
+        int cMax = Math.max(argb.r, Math.max(argb.g, argb.b));
+        int cMin = Math.min(argb.r, Math.min(argb.g, argb.b));
+        int delta = cMax - cMin;
+        int saturation = (cMax != 0) ? (delta / cMax) : 0;
+
+        HSB hsb = new HSB(0, 0, cMax);
+
+        if (cMax == cMin) {
+            hsb.brightness = cMax;
+        } else if (cMax == argb.r) {
+            hsb.hue = 60 * ((argb.g - argb.b) / delta) % 6;
+            hsb.saturation = saturation;
+            hsb.brightness = cMax;
+        } else if (cMax == argb.g) {
+            hsb.hue = 60 * ((argb.b - argb.r) / delta) + 2;
+            hsb.saturation = saturation;
+            hsb.brightness = cMax;
+        } else if (cMax == argb.b) {
+            hsb.hue = 60 * ((argb.r - argb.g) / delta) + 4;
+            hsb.saturation = saturation;
+            hsb.brightness = cMax;
+        }
+
+        return hsb;
+    }
 }
