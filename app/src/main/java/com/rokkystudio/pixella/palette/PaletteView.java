@@ -2,21 +2,31 @@ package com.rokkystudio.pixella.palette;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.rokkystudio.pixella.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PaletteView extends View
 {
-    private Palette mPalette = new Palette("Empty");
-    private int mRows = 3; // Default palette rows
+    private Palette mPalette;
+    private List<Rect> mRects;
+
+    // Default palette rows
+    private int mRows = 3;
 
     private int mCellWidth;
     private int mCellHeight;
+
+    private Paint mPaint;
 
     public PaletteView(Context context) {
         super(context);
@@ -34,17 +44,48 @@ public class PaletteView extends View
     }
 
     private void init() {
+        mPalette = new Palette("Empty");
+        mRects = new ArrayList<>();
+
         mCellWidth = (int) getResources().getDimension(R.dimen.palette_cell_width);
         mCellHeight = (int) getResources().getDimension(R.dimen.palette_cell_height);
+        mPaint = new Paint();
+    }
+
+    private void calculateRects() {
+        mRects.clear();
+        for (int i = 0; i < mPalette.getCount(); i++) {
+            int x = (i / mRows) * mCellWidth;
+            int y = (i % mRows) * mCellHeight;
+            mRects.add(new Rect(x, y, x + mCellWidth, y + mCellHeight));
+        }
     }
 
     public void setPalette(Palette palette) {
         mPalette = palette;
+        calculateRects();
+        requestLayout();
+        invalidate();
     }
 
     public void setRows(int rows) {
         if (rows < 1) return;
         mRows = rows;
+        calculateRects();
+        requestLayout();
+        invalidate();
+    }
+
+    public void setCellWidth(int width) {
+        mCellWidth = width;
+        calculateRects();
+        requestLayout();
+        invalidate();
+    }
+
+    public void setCellHeight(int height) {
+        mCellHeight = height;
+        calculateRects();
         requestLayout();
         invalidate();
     }
@@ -58,13 +99,6 @@ public class PaletteView extends View
         return (mPalette.getCount() - 1) / mRows + 1;
     }
 
-    public void setCellWidth(int width) {
-        mCellWidth = width;
-    }
-
-    public void setCellHeight(int height) {
-        mCellHeight = height;
-    }
 
     public void setOnClickListener() {
 
@@ -79,6 +113,15 @@ public class PaletteView extends View
     }
 
     protected void onDraw(Canvas canvas) {
+        for (int i = 0; i < mPalette.getCount(); i++)
+        {
+            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setColor(mPalette.getColor(i).getIntColor());
+            canvas.drawRect(mRects.get(i), mPaint);
 
+            mPaint.setStyle(Paint.Style.STROKE);
+            mPaint.setColor(Color.parseColor("#999999"));
+            canvas.drawRect(mRects.get(i), mPaint);
+        }
     }
 }

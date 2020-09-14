@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rokkystudio.pixella.palette.Palette;
 import com.rokkystudio.pixella.palette.PaletteManager;
 import com.rokkystudio.pixella.palette.PaletteView;
 
@@ -17,6 +18,7 @@ public class WorkspaceFragment extends Fragment
     private View mRootView = null;
 
     private PaletteManager mPaletteManager;
+    private Palette mUserPalette = new Palette("User Palette");
 
     public WorkspaceFragment() {}
 
@@ -24,8 +26,8 @@ public class WorkspaceFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-        mPaletteManager = new PaletteManager();
+        mPaletteManager = new PaletteManager(getContext());
+        mPaletteManager.
     }
 
     @Override
