@@ -27,7 +27,6 @@ public class WorkspaceFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mPaletteManager = new PaletteManager(getContext());
-        mPaletteManager.
     }
 
     @Override
@@ -35,7 +34,7 @@ public class WorkspaceFragment extends Fragment
         if (mRootView != null) return mRootView;
         mRootView = inflater.inflate(R.layout.workspace, container, false);
         PaletteView paletteView = mRootView.findViewById(R.id.PaletteView);
-        paletteView
+        paletteView.setPalette(mUserPalette);
         return mRootView;
     }
 
