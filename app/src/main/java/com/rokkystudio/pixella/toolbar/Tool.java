@@ -1,32 +1,36 @@
 package com.rokkystudio.pixella.toolbar;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.DrawFilter;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
-import androidx.appcompat.widget.AppCompatImageView;
-import android.util.AttributeSet;
-
-public class Tool extends AppCompatImageView
+public class Tool
 {
-    private static final DrawFilter mDrawFilter = new PaintFlagsDrawFilter(Paint.FILTER_BITMAP_FLAG, 0);
+    private String mName;
+    private String mEvent;
+    private String mIcon;
 
-    public Tool(Context context) {
-        super(context);
+    public Tool(String name, String event) {
+        mName = name; mEvent = event;
     }
 
-    public Tool(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public void setName(String name) {
+        mName = name;
     }
 
-    public Tool(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public void setEvent(String event) {
+        mEvent = event;
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        //canvas.setDrawFilter(mDrawFilter);
-        super.onDraw(canvas);
+    public void setIcon(String icon) {
+        mIcon = icon;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public String getEvent() {
+        return mEvent;
+    }
+
+    public String getIcon() {
+        return mIcon;
     }
 }

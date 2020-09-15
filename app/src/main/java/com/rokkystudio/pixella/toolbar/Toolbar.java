@@ -1,60 +1,23 @@
 package com.rokkystudio.pixella.toolbar;
 
-import android.content.Context;
-import android.content.res.XmlResourceParser;
-import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import java.util.ArrayList;
+import java.util.List;
 
-import androidx.annotation.Nullable;
-
-import com.rokkystudio.pixella.R;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
-public class Toolbar extends LinearLayout
+public class Toolbar
 {
-    public Toolbar(Context context) {
-        super(context);
-        init();
+    private List<ToolGroup> mToolGroups = new ArrayList<>();
+
+    public Toolbar() {}
+
+    public void addGroup(ToolGroup group) {
+        mToolGroups.add(group);
     }
 
-    public Toolbar(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    public ToolGroup getGroup(int index) {
+        return mToolGroups.get(index);
     }
 
-    public Toolbar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        setOrientation(HORIZONTAL);
-        setDefaultToolbarLayout();
-    }
-
-    private void setDefaultToolbarLayout() {
-        try {
-            XmlResourceParser parser = getResources().getXml(R.xml.toolbar);
-            int eventType = parser.next();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (parser.getName() )
-                eventType = parser.next();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addTool(ToolView toolView) {
-        ToolView view = new ToolView(getContext());
-        childBox.setAdjustViewBounds(true);
-        addView(childBox);
+    public int getCount() {
+        return mToolGroups.size();
     }
 }

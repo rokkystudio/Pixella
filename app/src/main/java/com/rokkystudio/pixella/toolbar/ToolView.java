@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 
 public class ToolView extends androidx.appcompat.widget.AppCompatImageView
 {
+    private Tool mTool = null;
+
     public ToolView(Context context) {
         super(context);
     }
@@ -17,5 +19,13 @@ public class ToolView extends androidx.appcompat.widget.AppCompatImageView
 
     public ToolView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setTool(Tool tool) {
+        mTool = tool;
+    }
+
+    public Tool getTool() {
+        return mTool;
     }
 }
