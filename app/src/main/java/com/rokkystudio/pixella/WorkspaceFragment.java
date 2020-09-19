@@ -39,7 +39,7 @@ public class WorkspaceFragment extends Fragment
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof WorkspaceListener) {
             mListener = (WorkspaceListener) context;
