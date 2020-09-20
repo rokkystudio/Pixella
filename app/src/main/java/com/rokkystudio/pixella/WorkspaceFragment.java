@@ -27,6 +27,8 @@ public class WorkspaceFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mPaletteManager = new PaletteManager(getContext());
+        mUserPalette = mPaletteManager.getPalette(0);
+        mUserPalette.sortByHue();
     }
 
     @Override

@@ -45,14 +45,16 @@ public class Palette
         return mColors.size();
     }
 
-    private void sortByHue() {
+    public void sortByHue() {
         Collections.sort(mColors, new HueCmp());
     }
 
     private static class HueCmp implements Comparator<Color> {
         @Override
         public int compare(Color a, Color b) {
-            return a.getHSBColor().hue - b.getHSBColor().hue;
+            HSB ahsb = a.getHSBColor();
+            HSB bhsb = b.getHSBColor();
+            return ahsb.getHue() - bhsb.getHue();
         }
     }
 }

@@ -13,4 +13,13 @@ public class PaletteManager
         mPalettes.addAll(PaletteLoader.getStoragePalettes(context));
         mPalettes.addAll(PaletteLoader.getDefaultPalettes(context));
     }
+
+    public Palette getPalette(int index) {
+        if (index < 0 || index >= mPalettes.size()) return null;
+        return mPalettes.get(index);
+    }
+
+    public int getPalettesCount() {
+        return mPalettes.size();
+    }
 }

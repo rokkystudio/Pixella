@@ -47,8 +47,8 @@ public class PaletteView extends View
     private void init() {
         setLayoutParams(new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
-        );
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
 
         mPalette = new Palette("Empty");
         mRects = new ArrayList<>();
@@ -118,7 +118,8 @@ public class PaletteView extends View
         setMeasuredDimension(getColumns() * mCellWidth , getRows() * mCellHeight);
     }
 
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas)
+    {
         canvas.drawColor(Color.BLACK);
         for (int i = 0; i < mPalette.getCount(); i++)
         {
