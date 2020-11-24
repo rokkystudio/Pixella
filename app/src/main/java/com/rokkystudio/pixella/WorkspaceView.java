@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -1003,6 +1004,11 @@ public class WorkspaceView extends View
     @Override
     protected void onDraw(Canvas canvas)
     {
+        if (mDrawable == null) {
+            super.onDraw(canvas);
+            return;
+        }
+
         onDrawReady = true;
         imageRenderedAtLeastOnce = true;
 
@@ -1024,6 +1030,7 @@ public class WorkspaceView extends View
         }
 
         canvas.restore();
+
         super.onDraw(canvas);
     }
 
@@ -1031,7 +1038,7 @@ public class WorkspaceView extends View
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         if (mDrawable == null || mDrawable.getIntrinsicWidth() == 0 || mDrawable.getIntrinsicHeight() == 0) {
-            setMeasuredDimension(0, 0);
+            setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
             return;
         }
 

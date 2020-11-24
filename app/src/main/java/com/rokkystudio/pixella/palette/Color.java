@@ -61,8 +61,8 @@ public class Color
         return mHex;
     }
 
-    public ARGB getARGBColor() {
-        return ARGB.fromHex(mHex);
+    public RGB getARGBColor() {
+        return RGB.fromHex(mHex);
     }
 
     public HSB getHSBColor() {
