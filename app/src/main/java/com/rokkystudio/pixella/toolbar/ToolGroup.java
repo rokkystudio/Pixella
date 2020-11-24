@@ -5,42 +5,42 @@ import java.util.List;
 
 public class ToolGroup
 {
-    private List<Tool> mTools = new ArrayList<>();
-    private Tool mDefaultTool = null;
+    private final List<String> mToolNames = new ArrayList<>();
+    private String mDefaultTool = null;
 
-    public void addTool(Tool tool) {
-        if (mTools.isEmpty()) {
-            setDefaultTool(tool);
+    public void addTool(String name) {
+        if (mToolNames.isEmpty()) {
+            setDefaultTool(name);
         }
-        mTools.add(tool);
+        mToolNames.add(name);
     }
 
-    public void removeTool(Tool tool)
+    public void removeTool(String name)
     {
-        mTools.remove(tool);
+        mToolNames.remove(name);
 
-        if (tool.equals(mDefaultTool)) {
+        if (name.equals(mDefaultTool)) {
             mDefaultTool = null;
         }
 
-        if (!mTools.isEmpty()) {
-            mDefaultTool = mTools.get(0);
+        if (!mToolNames.isEmpty()) {
+            mDefaultTool = mToolNames.get(0);
         }
     }
 
-    public void setDefaultTool(Tool tool) {
-        mDefaultTool = tool;
+    public void setDefaultTool(String name) {
+        mDefaultTool = name;
     }
 
-    public Tool getDefaultTool() {
+    public String getDefaultTool() {
         return mDefaultTool;
     }
 
     public int getCount() {
-        return mTools.size();
+        return mToolNames.size();
     }
 
-    public Tool getTool(int index) {
-        return mTools.get(index);
+    public String getTool(int index) {
+        return mToolNames.get(index);
     }
 }

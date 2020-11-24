@@ -5,57 +5,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.rokkystudio.pixella.toolbar.ToolbarView
+        android:id="@+id/MainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="#333333" />
+
     <com.rokkystudio.pixella.palette.PaletteView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/PaletteView"
-    />
+        android:id="@+id/PaletteView" />
 
     <com.rokkystudio.pixella.WorkspaceView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <LinearLayout
+    <com.rokkystudio.pixella.toolbar.ToolbarView
+        android:id="@+id/BottomToolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:orientation="horizontal">
+        android:background="#CCCCCC"
+        android:divider="@drawable/toolbar_divider"/>
 
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/color" />
-
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/eraser" />
-
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/pencil" />
-
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/paint" />
-
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/undo" />
-
-        <com.rokkystudio.pixella.toolbar.Tool
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/redo" />
-    </LinearLayout>
 
 </LinearLayout>

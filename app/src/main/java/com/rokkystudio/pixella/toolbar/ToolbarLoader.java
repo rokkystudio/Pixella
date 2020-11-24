@@ -3,6 +3,8 @@ package com.rokkystudio.pixella.toolbar;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 
+import androidx.annotation.NonNull;
+
 import com.rokkystudio.pixella.R;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,10 +18,8 @@ public class ToolbarLoader
     private static final String XML_TOOL_GROUP = "ToolGroup";
     private static final String XML_TOOL = "Tool";
     private static final String XML_TOOL_NAME = "name";
-    private static final String XML_TOOL_EVENT = "event";
-    private static final String XML_TOOL_ICON = "icon";
 
-    public static Toolbar getDefaultToolbar(Context context)
+    public static Toolbar getDefaultToolbar(@NonNull Context context)
     {
         Toolbar toolbar = new Toolbar();
 
@@ -96,15 +96,7 @@ public class ToolbarLoader
         return group;
     }
 
-    private static Tool parseTool(XmlPullParser parser)
-        throws IOException, XmlPullParserException
-    {
-        String name = parser.getAttributeValue(XmlPullParser.NO_NAMESPACE, XML_TOOL_NAME);
-        String event = parser.getAttributeValue(XmlPullParser.NO_NAMESPACE, XML_TOOL_EVENT);
-        String icon = parser.getAttributeValue(XmlPullParser.NO_NAMESPACE, XML_TOOL_ICON);
-
-        Tool tool = new Tool(name, event);
-        tool.setIcon(icon);
-        return tool;
+    private static String parseTool(XmlPullParser parser) {
+        return parser.getAttributeValue(null, XML_TOOL_NAME);
     }
 }

@@ -29,7 +29,6 @@ public class ToolbarView extends LinearLayout implements
 
     private void init() {
         setOrientation(HORIZONTAL);
-        setToolbar(ToolbarLoader.getDefaultToolbar(getContext()));
     }
 
     public void setToolbar(Toolbar toolbar)
@@ -39,9 +38,9 @@ public class ToolbarView extends LinearLayout implements
 
         for (int i = 0; i < mToolbar.getCount(); i++)
         {
-            Tool tool = mToolbar.getGroup(i).getDefaultTool();
+            String name = mToolbar.getGroup(i).getDefaultTool();
             ToolView toolView = new ToolView(getContext());
-            toolView.setTool(tool);
+            toolView.setTool(name);
             toolView.setOnClickListener(this);
             toolView.setOnLongClickListener(this);
             addView(toolView);

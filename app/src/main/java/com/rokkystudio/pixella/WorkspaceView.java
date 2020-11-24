@@ -1013,13 +1013,13 @@ public class WorkspaceView extends View
 
         // Задний план серый
         canvas.drawColor(0xFFEEEEEE);
-        canvas.save();
-        canvas.clipRect(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
-        // Фон изображения белый
-        canvas.drawColor(0xFFFFFFFF);
-        canvas.restore();
 
         if (mDrawable != null) {
+            canvas.save();
+            canvas.clipRect(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
+            // Фон изображения белый
+            canvas.drawColor(0xFFFFFFFF);
+            canvas.restore();
             mDrawable.draw(canvas);
         }
 

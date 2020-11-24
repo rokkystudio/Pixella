@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Toolbar
 {
-    private List<ToolGroup> mToolGroups = new ArrayList<>();
+    private final List<ToolGroup> mToolGroups = new ArrayList<>();
 
     public Toolbar() {}
 

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.rokkystudio.pixella.palette.Palette;
 import com.rokkystudio.pixella.palette.PaletteManager;
 import com.rokkystudio.pixella.palette.PaletteView;
+import com.rokkystudio.pixella.toolbar.ToolbarLoader;
+import com.rokkystudio.pixella.toolbar.ToolbarView;
 
 public class WorkspaceFragment extends Fragment
 {
@@ -30,16 +32,23 @@ public class WorkspaceFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         if (mRootView != null) return mRootView;
         mRootView = inflater.inflate(R.layout.workspace, container, false);
+
         PaletteView paletteView = mRootView.findViewById(R.id.PaletteView);
         paletteView.setPalette(mUserPalette);
+
+        ToolbarView mainToolbarView = mRootView.findViewById(R.id.MainToolbar);
+        ToolbarView bottomToolbarView = mRootView.findViewById(R.id.BottomToolbar);
+        bottomToolbarView.setToolbar(ToolbarLoader.getDefaultToolbar(getContext()));
+
         return mRootView;
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof WorkspaceListener) {
             mListener = (WorkspaceListener) context;
