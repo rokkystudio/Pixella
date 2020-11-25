@@ -3,8 +3,11 @@ package com.rokkystudio.pixella.toolbar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+
+import com.rokkystudio.pixella.R;
 
 public class ToolView extends androidx.appcompat.widget.AppCompatImageView
 {
@@ -26,7 +29,10 @@ public class ToolView extends androidx.appcompat.widget.AppCompatImageView
     }
 
     private void init() {
-        setPadding
+        final int padding = (int) getResources().getDimension(R.dimen.toolbar_button_padding);
+        setPadding(padding, padding, padding, padding);
+        final int size = (int) getResources().getDimension(R.dimen.toolbar_button_size);
+        setLayoutParams(new ViewGroup.LayoutParams(size, size));
     }
 
     public void setTool(String name) {

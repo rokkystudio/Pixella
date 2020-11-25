@@ -8,8 +8,11 @@
     <com.rokkystudio.pixella.toolbar.ToolbarView
         android:id="@+id/MainToolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="#333333" />
+        android:layout_height="wrap_content"
+        android:background="#CCCCCC"
+        android:divider="@drawable/toolbar_divider"
+        android:dividerPadding="10dp"
+        android:showDividers="middle" />
 
     <com.rokkystudio.pixella.palette.PaletteView
         android:layout_width="match_parent"
@@ -24,9 +27,10 @@
     <com.rokkystudio.pixella.toolbar.ToolbarView
         android:id="@+id/BottomToolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
+        android:layout_height="wrap_content"
         android:background="#CCCCCC"
-        android:divider="@drawable/toolbar_divider"/>
-
+        android:divider="@drawable/toolbar_divider"
+        android:dividerPadding="10dp"
+        android:showDividers="middle" />
 
 </LinearLayout>

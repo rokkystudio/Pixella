@@ -31,6 +31,10 @@ public class ToolbarView extends LinearLayout implements
         setOrientation(HORIZONTAL);
     }
 
+    public void resetSelectAll() {
+
+    }
+
     public void setToolbar(Toolbar toolbar)
     {
         mToolbar = toolbar;

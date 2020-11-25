@@ -43,6 +43,8 @@ public class WorkspaceFragment extends Fragment
         paletteView.setPalette(mUserPalette);
 
         ToolbarView mainToolbarView = mRootView.findViewById(R.id.MainToolbar);
+        mainToolbarView.setToolbar(ToolbarLoader.getDefaultToolbar(getContext()));
+
         ToolbarView bottomToolbarView = mRootView.findViewById(R.id.BottomToolbar);
         bottomToolbarView.setToolbar(ToolbarLoader.getDefaultToolbar(getContext()));
 

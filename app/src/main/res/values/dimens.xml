@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="toolbar_height">60dp</dimen>
-    <dimen name="toolbar_padding">5dp</dimen>
+    <dimen name="toolbar_button_size">65dp</dimen>
+    <dimen name="toolbar_button_padding">7dp</dimen>
 
     <dimen name="palette_cell_width">20dp</dimen>
     <dimen name="palette_cell_height">30dp</dimen>
